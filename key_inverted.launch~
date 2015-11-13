@@ -1,0 +1,16 @@
+<!-- %Tag(FULL)%-->
+<launch>
+
+
+ <!-- Turtlesim Node-->
+  <node pkg="turtlesim" type="turtlesim_node" name="turtlesim">
+  <remap from="turtle1/cmd_vel" to="turtle1/cmd_vel_inverted"/>
+
+ <!--Teleop key -->
+	<node pkg="turtlesim" type="turtle_teleop_key" name="teleop_key" launch-prefix="xterm -e"/>
+
+ <!--inv node -->
+	<node pkg="joystick2" type="reverse_cmd_vel" name="reverse_velocity"/>
+
+</launch>
+<!-- %EndTag(FULL)%-->
