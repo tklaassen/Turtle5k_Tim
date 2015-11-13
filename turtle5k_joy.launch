@@ -1,4 +1,3 @@
-<!-- %Tag(FULL)%-->
 <launch>
 
  <!-- joy node -->
@@ -8,17 +7,15 @@
     </node>
 
  <!-- Axes -->
-  <param name="axis_motor1" value="0" type="int"/>
-  <param name="axis_motor2" value="1" type="int"/>
-  <param name="axis_motor3" value="3" type="int"/>
-  <param name="scale_motor1" value="100" type="double"/>
-  <param name="scale_motor2" value="100" type="double"/>
-  <param name="scale_motor3" value="100" type="double"/>
-
-  <node pkg="joystick2" type="motor_drivers_set_node" name="teleop"/>
+  <param name="AxisMotor1" value="0" type="int"/>
+  <param name="AxisMotor2" value="1" type="int"/>
+  <param name="AxisMotor3" value="3" type="int"/>
+  <param name="dScaleMotor1" value="100" type="double"/>
+  <param name="dScaleMotor2" value="100" type="double"/>
+  <param name="dScaleMotor3" value="100" type="double"/>
 
   <!-- Set drivers node -->
-	<node pkg="joystick2" type="motor_drivers_set_node" name="motor_driver"/>
+	<node pkg="joystick2" type="MotorDriversSetNode" name="MotorDriver"/>
 
 </launch>
 <!-- %EndTag(FULL)%-->

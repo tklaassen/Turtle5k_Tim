@@ -130,7 +130,7 @@ include_directories(
 ## Declare a C++ executable
  add_executable(joystick2_node src/turtle_teleop_joy.cpp)
  add_executable(reverse_cmd_vel src/cmd_vel_inverted.cpp)
- add_executable(motor_drivers_set_node src/joystick_Turtle5k.cpp)
+ add_executable(MotorDriversSetNode src/joystick_Turtle5k.cpp)
  
 
 ## Add cmake target dependencies of the executable
@@ -140,7 +140,7 @@ include_directories(
 ## Specify libraries to link a library or executable target against
 target_link_libraries(joystick2_node ${catkin_LIBRARIES})
 target_link_libraries(reverse_cmd_vel ${catkin_LIBRARIES})
-target_link_libraries(motor_drivers_set_node ${catkin_LIBRARIES})
+target_link_libraries(MotorDriversSetNode ${catkin_LIBRARIES})
 
 
 #############

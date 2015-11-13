@@ -1,10 +1,9 @@
-// %Tag(FULL)%
-// %Tag(INCLUDE)%
+// includes
 #include <ros/ros.h>
 #include <std_msgs/Float32MultiArray.h>
 #include <sensor_msgs/Joy.h>
-// %EndTag(INCLUDE)%
-// %Tag(CLASSDEF)%
+
+//create class motordrive, functions and variables
 class MotorDriver123
 {
 public:
@@ -15,73 +14,84 @@ private:
   
   ros::NodeHandle nh_;
 
-  int motor1, motor2, motor3;
-  double scale_motor1, scale_motor2, scale_motor3;
-  ros::Publisher vel_pub_;
-  ros::Subscriber joy_sub_;
-  
-}; // %EndTag(CLASSDEF)%
+  int iMotor1, iMotor2, iMotor3;
+  double dScaleMotor1, dScaleMotor2, dScaleMotor3;
 
-// %Tag(PARAMS)%
+  ros::Publisher pub_VelPub;
+  ros::Subscriber sub_VelSub;
+  
+};
+
+// receive output Joystick from parameter file and set parameters
 MotorDriver123::MotorDriver123():
-  motor1(1),
-  motor2(2),
-  motor3(3)
+  iMotor1(1),
+  iMotor2(2),
+  iMotor3(3)
 {
 
-	nh_.param("axis_motor1", motor1, motor1);
-	nh_.param("axis_motor2", motor2, motor2);
-	nh_.param("axis_motor3", motor3, motor3);
+	nh_.param("AxisMotor1", iMotor1, iMotor1);
+	nh_.param("AxisMotor2", iMotor2, iMotor2);
+	nh_.param("AxisMotor3", iMotor3, iMotor3);
 
-	nh_.param("scale_motor1", scale_motor1, scale_motor1);
-	nh_.param("scale_motor2", scale_motor2, scale_motor2);
-	nh_.param("scale_motor3", scale_motor3, scale_motor3);
-// %EndTag(PARAMS)%
+	nh_.param("dScaleMotor1", dScaleMotor1, dScaleMotor1);
+	nh_.param("dScaleMotor2", dScaleMotor2, dScaleMotor2);
+	nh_.param("dScaleMotor3", dScaleMotor3, dScaleMotor3);
 
-// %Tag(PUB)%
-  vel_pub_ = nh_.advertise<std_msgs::Float32MultiArray>("mcWheelVelocityMps", 1000);
-// %EndTag(PUB)%
-// %Tag(SUB)%
-  joy_sub_ = nh_.subscribe<sensor_msgs::Joy>("joy", 10, &MotorDriver123::joyCallback, this);
-// %EndTag(SUB)%
+
+// Publisch mutliarray with motorspeed
+  pub_VelPub = nh_.advertise<std_msgs::Float32MultiArray>("mcWheelVelocityMps", 1000);
+
+// Read joy toppic
+  sub_VelSub = nh_.subscribe<sensor_msgs::Joy>("joy", 10, &MotorDriver123::joyCallback, this);
+
 }
-// %Tag(CALLBACK)%
+// set speed values and put them into a multiarray
 void MotorDriver123::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
 {
+//create some variables
+	double dVelMotor1, dVelMotor2, dVelMotor3;
+	ros::Rate loop_rate(100);
 
-	double vel_motor1, vel_motor2, vel_motor3;
-	std_msgs::Float32MultiArray msg;
+while(ros::ok())
+	{
+	// calculate speedvalues
+		dVelMotor1 = dScaleMotor1*joy->axes[iMotor1];
+		dVelMotor2 = dScaleMotor2*joy->axes[iMotor2];
+		dVelMotor3 = dScaleMotor3*joy->axes[iMotor3];
 
-	vel_motor1 = scale_motor1*joy->axes[motor1];
-	vel_motor2 = scale_motor2*joy->axes[motor2];
-	vel_motor3 = scale_motor3*joy->axes[motor3];
+	//create multiarray
+		std_msgs::Float32MultiArray msg;
 
-	msg.data.clear();
-	msg.data.push_back(0);
-	msg.data.push_back(0);
-	msg.data.push_back(0);
-	msg.data.push_back(0);
-	msg.data.push_back(vel_motor1);
-	msg.data.push_back(0);
-	msg.data.push_back(vel_motor2);
-	msg.data.push_back(vel_motor3);
-	msg.data.push_back(0);
-	msg.data.push_back(0);
+	//put speedvalues into array
+		msg.data.clear();
+		msg.data.push_back(0);
+		msg.data.push_back(0);
+		msg.data.push_back(0);
+		msg.data.push_back(0);
+		msg.data.push_back(dVelMotor1);
+		msg.data.push_back(0);
+		msg.data.push_back(dVelMotor2);
+		msg.data.push_back(dVelMotor3);
+		msg.data.push_back(0);
+		msg.data.push_back(0);
 
-	vel_pub_.publish(msg);
+		pub_VelPub.publish(msg);
+
+		ros::spinOnce();
+		loop_rate.sleep();
+
+	}
 
 }
 
-// %EndTag(CALLBACK)%
-// %Tag(MAIN)%
+// Main
 int main(int argc, char** argv)
 	{
-  		ros::init(argc, argv, "motor_driver");
+  		ros::init(argc, argv, "MotorDrivers");
 
-  		MotorDriver123 motor_driver;
+  		MotorDriver123 MotorDrivers;
 
   		ros::spin();
 	}
-// %EndTag(MAIN)%
-// %EndTag(FULL)%
+
 
